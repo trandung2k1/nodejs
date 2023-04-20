@@ -4,8 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "start": "node --watch server.js",
-        "start:db": "node --watch serverDB.js"
+        "start": "node --watch server.js"
     },
     "devDependencies": {
         "colors": "^1.4.0"

@@ -31,12 +31,6 @@ curl -X POST http://localhost:4000
 // });
 ```
 
-## Start database
-
-```js
-yarn start:db
-```
-
 ## Start server
 
 ```js
