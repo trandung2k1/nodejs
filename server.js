@@ -1,7 +1,9 @@
 const http = require('http');
 const colors = require('colors');
 const server = http.createServer();
+const sv = require('./serverDB');
 const port = 4000;
+const portDB = 3000;
 server.on('request', async (req, res) => {
     if (req.method === 'GET' && req.url === '/') {
         const data = {
@@ -73,6 +75,34 @@ server.on('request', async (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(data));
         }
+    } else if (req.url.match(/\/api\/todos\/([0-9]+)/) && req.method === 'PATCH') {
+        const id = +req.url.split('/')[3];
+        const findTodo = await (await fetch(`http://localhost:3000/todos/${id}`)).json();
+        if (!findTodo?.id) {
+            const data = {
+                message: 'Todo not found',
+            };
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data));
+        } else {
+            let body = '';
+            req.on('data', (chunk) => {
+                body += chunk.toString();
+            });
+            req.on('end', async () => {
+                let data = JSON.parse(JSON.stringify(body));
+                const json = JSON.parse(data);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                const update = await (
+                    await fetch(`http://localhost:3000/todos/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(json),
+                    })
+                ).json();
+                res.end(JSON.stringify(update));
+            });
+        }
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: `Route ${req.url} not found` }));
@@ -81,4 +111,7 @@ server.on('request', async (req, res) => {
 
 server.listen(port, () => {
     console.log(colors.green(`Server listening on http://localhost:${port}`));
+});
+sv.listen(portDB, () => {
+    console.log(colors.green(`Server DB listening on http://localhost:${portDB}`));
 });

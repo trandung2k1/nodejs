@@ -1,5 +1,8 @@
 GET http://localhost:4000/api/todos
 
+### Get todo by id
+GET http://localhost:4000/api/todos/2
+
 ###
 POST http://localhost:4000/api/todos
 # Authorization: Bearer accessToken
@@ -13,3 +16,13 @@ Content-Type: application/json
 
 ###
 DELETE  http://localhost:4000/api/todos/4
+
+###
+PATCH  http://localhost:4000/api/todos/5
+Content-Type: application/json
+
+{
+    "title": "Clean room Update",
+    "description": "Clean room",
+    "completed": false
+}
